@@ -1,4 +1,6 @@
 var startEl = document.querySelector("#start");
+var initialsInput;
+var saveButton;
 var timeLeft = 120;
 var questionNumber = 0;
 
@@ -21,6 +23,7 @@ var questions = [
     }
 ]
 
+// begins the countdown clock
 function countdown() {
     var timerEl = document.getElementById('timer');
 
@@ -38,7 +41,7 @@ function countdown() {
     }, 1000);
 };
 
-function giveQuestion() {
+function questionHandler() {
     
     var questionEl = document.getElementById("question-area");
     questionEl.innerHTML = "";
@@ -89,13 +92,48 @@ function incorrect() {
 
 function next() {
     questionNumber++;
-    debugger;
-    giveQuestion();
+    // checks for another question
+    if(questionNumber >= questions.length) {
+        // goes to gameOver() if true
+        gameOver();
+    } else {
+        // goes back to questionHandler() if flase
+        questionHandler();
+    }
 };
+
+function gameOver() {
+    var score = timeLeft;
+    
+    var timerEl = document.getElementById('timer');
+    
+
+    var gameOverEl = document.getElementById("game-over");
+
+    var resultsEl = document.createElement("div");
+    gameOverEl.appendChild(resultsEl);
+
+    var resultsText = document.createElement("h4");
+    resultsText.textContent = "Score: " + score;
+    resultsEl.appendChild(resultsText);
+    
+
+
+    
+    initialsInput = document.createElement("input");
+    initialsInput.setAttribute("type", "text");
+    initialsInput.className = "initials";
+    
+
+    saveButton = document.createElement("button");
+
+};
+
+
 
 function start() {
     countdown();
-    giveQuestion();
+    questionHandler();
 };
 
 startEl.addEventListener("click", function() {
@@ -103,3 +141,4 @@ startEl.addEventListener("click", function() {
     timeLeft = 120;
     start();
 });
+
