@@ -105,8 +105,8 @@ function next() {
 function gameOver() {
     var score = timeLeft;
     
-    var timerEl = document.getElementById('timer');
-    
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("question-area").style.display = "none";
 
     var gameOverEl = document.getElementById("game-over");
 
