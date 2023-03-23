@@ -109,7 +109,10 @@ var next = function() {
 
 
 var gameOver = function() {
+    debugger;
     var quizScore = timeLeft;
+    var allTimeHigh = localStorage.getItem("high-score");
+    allTimeHigh = JSON.parse(allTimeHigh);
     
     // removes question and timer
     document.getElementById("timer").style.display = "none";
@@ -127,7 +130,7 @@ var gameOver = function() {
     // if the users scored the high-score they can save them by putting their initials in 
     var highScoreText = document.createElement("h3");
     
-    if(quizScore > highScore.score) {
+    if(quizScore > allTimeHigh.score) {
         highScore.score = quizScore;
         
         highScoreText.textContent = "Congratulations you got the high-score! Enter your initials in the box below to save your score";
@@ -154,7 +157,6 @@ var gameOver = function() {
 };
 
 var saveScore = function() {
-    debugger;
     highScore.initials = document.getElementById("initials").value;
     localStorage.setItem("high-score", JSON.stringify(highScore));
 };
