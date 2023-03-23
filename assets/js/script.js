@@ -1,8 +1,13 @@
 var startEl = document.querySelector("#start");
-var initialsInput;
-var saveButton;
+var initialsInput = 0;
+var saveButtonEl;
 var timeLeft = 120;
 var questionNumber = 0;
+
+var highScore = {
+    initials: "",
+    score: 0
+}
 
 // list of questions in the quiz
 var questions = [
@@ -24,7 +29,7 @@ var questions = [
 ]
 
 // begins the countdown clock
-function countdown() {
+var countdown = function() {
     var timerEl = document.getElementById('timer');
 
     var timeInterval = setInterval(function() {
@@ -41,7 +46,7 @@ function countdown() {
     }, 1000);
 };
 
-function questionHandler() {
+var questionHandler = function() {
     
     var questionEl = document.getElementById("question-area");
     questionEl.innerHTML = "";
@@ -71,7 +76,7 @@ function questionHandler() {
 };
 
 // checks if the answer is correct
-function evaluate(answer) {
+var evaluate = function(answer) {
     if(answer == questions[questionNumber].correct) {
         correct();
         next();
@@ -81,64 +86,86 @@ function evaluate(answer) {
     }
 };
 
-function correct() {
+var correct = function() {
     console.log('correct');
 };
 
-function incorrect() {
+var incorrect = function() {
     console.log('incorrect');
     timeLeft = timeLeft - 15;
 };
 
-function next() {
+var next = function() {
     questionNumber++;
     // checks for another question
     if(questionNumber >= questions.length) {
         // goes to gameOver() if true
         gameOver();
     } else {
-        // goes back to questionHandler() if flase
+        // goes back to questionHandler() if false
         questionHandler();
     }
 };
 
-function gameOver() {
-    var score = timeLeft;
-    
-    document.getElementById("timer").style.display = "none";
-    document.getElementById("question-area").style.display = "none";
-
-    var gameOverEl = document.getElementById("game-over");
-
-    var resultsEl = document.createElement("div");
-    gameOverEl.appendChild(resultsEl);
-
-    var resultsText = document.createElement("h4");
-    resultsText.textContent = "Score: " + score;
-    resultsEl.appendChild(resultsText);
-    
-
-
-    
-    initialsInput = document.createElement("input");
-    initialsInput.setAttribute("type", "text");
-    initialsInput.className = "initials";
-    
-
-    saveButton = document.createElement("button");
-
+var saveScore = function() {
+    debugger;
+    highScore.initials = initialsInput.textContent;
+    localStorage.setItem("high-score", JSON.stringify(highScore));
 };
 
+var gameOver = function() {
+    var quizScore = timeLeft;
 
+    // removes question and timer
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("question-area").style.display = "none";
+    
+    var gameOverEl = document.getElementById("game-over");
+    
+    var resultsEl = document.createElement("div");
+    gameOverEl.appendChild(resultsEl);
+    
+    var resultsText = document.createElement("h4");
+    resultsText.textContent = "Score: " + quizScore + " High-score: " + highScore.score;
+    resultsEl.appendChild(resultsText);
+
+    // if the users scored the high-score they can save them by putting their initials in 
+    var highScoreText = document.createElement("h3");
+    
+    if(quizScore > highScore.score) {
+        highScore.score = quizScore;
+
+        highScoreText.textContent = "Congratulations you got the high-score! Enter your initials in the box below to save your score";
+        resultsEl.appendChild(highScoreText);
+
+        initialsInput = document.createElement("input");
+        initialsInput.setAttribute("type", "text");
+        initialsInput.className = "initials";
+        gameOverEl.appendChild(initialsInput);
+
+        saveButtonEl = document.createElement("button");
+        saveButtonEl.textContent = "Save"
+        saveButtonEl.className = "btn save-btn";
+        gameOverEl.appendChild(saveButtonEl);
+
+        // click save button to save high-score
+        saveButtonEl.addEventListener("click", saveScore);
+
+    } else {
+        highScoreText.textContent = "You weren't able to beat the high-score of " + highScore.score + ".";
+        resultsEl.appendChild(highScoreText);
+    }
+
+};
 
 function start() {
     countdown();
     questionHandler();
 };
 
+// click the start button to begin
 startEl.addEventListener("click", function() {
     startEl.remove();
     timeLeft = 120;
     start();
 });
-
