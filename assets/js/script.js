@@ -107,15 +107,10 @@ var next = function() {
     }
 };
 
-var saveScore = function() {
-    debugger;
-    highScore.initials = initialsInput.textContent;
-    localStorage.setItem("high-score", JSON.stringify(highScore));
-};
 
 var gameOver = function() {
     var quizScore = timeLeft;
-
+    
     // removes question and timer
     document.getElementById("timer").style.display = "none";
     document.getElementById("question-area").style.display = "none";
@@ -128,37 +123,43 @@ var gameOver = function() {
     var resultsText = document.createElement("h4");
     resultsText.textContent = "Score: " + quizScore + " High-score: " + highScore.score;
     resultsEl.appendChild(resultsText);
-
+    
     // if the users scored the high-score they can save them by putting their initials in 
     var highScoreText = document.createElement("h3");
     
     if(quizScore > highScore.score) {
         highScore.score = quizScore;
-
+        
         highScoreText.textContent = "Congratulations you got the high-score! Enter your initials in the box below to save your score";
         resultsEl.appendChild(highScoreText);
-
+        
         initialsInput = document.createElement("input");
         initialsInput.setAttribute("type", "text");
-        initialsInput.className = "initials";
+        initialsInput.id = "initials";
         gameOverEl.appendChild(initialsInput);
-
+        
         saveButtonEl = document.createElement("button");
         saveButtonEl.textContent = "Save"
         saveButtonEl.className = "btn save-btn";
         gameOverEl.appendChild(saveButtonEl);
-
+        
         // click save button to save high-score
         saveButtonEl.addEventListener("click", saveScore);
-
+        
     } else {
         highScoreText.textContent = "You weren't able to beat the high-score of " + highScore.score + ".";
         resultsEl.appendChild(highScoreText);
     }
-
+    
 };
 
-function start() {
+var saveScore = function() {
+    debugger;
+    highScore.initials = document.getElementById("initials").value;
+    localStorage.setItem("high-score", JSON.stringify(highScore));
+};
+
+var start = function() {
     countdown();
     questionHandler();
 };
